@@ -222,7 +222,90 @@ main.drawer-panel #fab{opacity:0;visibility:hidden}
   aside.open{transform:none;box-shadow:0 0 30px rgba(40,30,20,.18)}
   .lib-grid{grid-template-columns:1fr 1fr 1fr}
   .brand span,footer .only2d{display:none!important}
+
+  /* 窄屏：頂欄只留一列，工具移到底部 dock，其餘收進「⋯」 */
+  .app{grid-template-rows:auto minmax(0,1fr) auto}
+  header{flex-wrap:nowrap;gap:8px;padding:6px 10px;overflow:hidden;position:relative;z-index:8}
+  header details.menu{display:none}
+  footer{display:none}
+  #moreBtn{border:1px solid var(--line);background:#fff;font-size:20px;line-height:1;padding:4px 12px;flex:none}
+  #moreBtn.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  #undo .gl,#redo .gl{display:inline;font-size:17px;line-height:1}
+  #undo span,#redo span{margin-left:4px}
+
+  #dock{grid-column:1/-1;grid-row:3;display:flex;justify-content:center;align-items:stretch;gap:8px;padding:6px 10px;
+    background:var(--panel);border-top:1px solid var(--line);position:relative;z-index:7}
+  #dock .grp{flex:0 1 auto;border-radius:12px}
+  #dock #tools{flex:1 1 auto;max-width:560px}
+  #dock #tools .btn{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;font-size:12px;line-height:1.2;border-radius:9px}
+  #dock #tools .ico{display:block;width:20px;height:20px}
+  #dock #tools .btn span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  #dock #modes3d .btn,#dock #views3d .btn{padding:8px 16px}
+
+  #moreSheet{position:fixed;z-index:20;right:10px;top:calc(env(safe-area-inset-top) + 56px);width:min(380px,calc(100vw - 20px));
+    max-height:calc(100dvh - 140px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:14px;
+    box-shadow:0 14px 40px rgba(40,30,20,.2);padding:6px 0;opacity:0;visibility:hidden;transform:translateY(-6px);
+    transition:opacity .18s,transform .18s,visibility 0s linear .18s;-webkit-overflow-scrolling:touch}
+  #moreSheet.open{opacity:1;visibility:visible;transform:none;transition:opacity .18s,transform .18s}
+  #moreSheet section{padding:8px 14px 10px;border-bottom:1px solid var(--line)}
+  #moreSheet section:last-child{border-bottom:0}
+  #moreSheet h5{margin:0 0 6px;font-size:12px;font-weight:600;color:var(--muted);letter-spacing:1px}
+  #moreSheet .slot{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  #moreSheet .grp{flex-wrap:wrap}
+  #moreSheet #langBtn,#moreSheet #fullscreen{border:1px solid var(--line);background:#fff}
+  #moreSheet .menu-pop{position:static;flex-direction:row;flex-wrap:wrap;gap:6px;min-width:0;padding:0;border:0;box-shadow:none;background:none;animation:none}
+  #moreSheet .menu-pop .btn,#moreSheet #clearAll{border:1px solid var(--line);background:#fff;text-align:center}
+  #moreSheet .range input{width:150px!important}
+
+  #fitFab{position:absolute;right:12px;top:12px;z-index:4;width:44px;height:44px;padding:0;font-size:20px;
+    background:rgba(255,253,249,.95);border:1px solid var(--line);border-radius:12px;box-shadow:0 4px 14px rgba(40,30,20,.12)}
+  .modehint{max-width:calc(100% - 132px);text-align:center}
+  #toast{bottom:auto;top:calc(env(safe-area-inset-top) + 68px);transform:translateX(-50%) translateY(-12px);max-width:calc(100vw - 32px);text-align:center}
 }
+/* 手機直向：側欄改為底部抽屜，頂欄壓縮 */
+@media (max-width:700px){
+  #brand{display:none}
+  header{gap:6px;padding:6px 8px}
+  header .grp{flex:none}
+  header .grp{padding:2px}
+  #paneBtns .btn{padding:6px 8px}
+  #tgLib .gl,#tgPanel span{display:none}
+  .seg .btn{padding:6px 0;font-size:13px}
+  .seg .btn,.seg .pill{width:62px!important}
+  .seg .pill{left:2px;top:2px;bottom:2px}
+  body.m3d .seg .pill{transform:translateX(62px)!important}
+  #undo span,#redo span{display:none}
+  #undo,#redo{padding:6px 9px}
+  #moreBtn{padding:4px 10px;margin-left:auto}
+  aside.lib,aside.right{width:100%;justify-self:stretch;align-self:end;height:min(62%,560px);transform:translateY(105%);
+    border:0;border-top:1px solid var(--line);border-radius:16px 16px 0 0}
+  aside.lib.open,aside.right.open{transform:none;box-shadow:0 -10px 30px rgba(40,30,20,.18)}
+  .lib-grid{grid-template-columns:repeat(4,1fr)}
+  .item svg{width:48px;height:38px}
+  .item b{font-size:11.5px;text-align:center;line-height:1.25}
+  .item small{font-size:10px}
+  #fab{bottom:10px;gap:2px;padding:4px}
+  #fab .name,#fab .t{display:none}
+  #fab .btn{padding:9px 11px}
+}
+@media (max-width:380px){
+  header{gap:4px;padding:6px 6px}
+  #paneBtns .btn,#undo,#redo{padding:6px 7px}
+  .seg .btn,.seg .pill{width:58px!important}
+  body.m3d .seg .pill{transform:translateX(58px)!important}
+}
+/* 手機橫向等矮螢幕：dock 改單行，節省高度 */
+@media (max-width:1100px) and (max-height:520px){
+  header{padding:4px 10px}
+  #dock{padding:4px 10px}
+  #dock #tools .btn{flex-direction:row;gap:5px;padding:6px 8px;font-size:13px;min-height:36px;justify-content:center}
+  #dock #tools .ico{width:17px;height:17px}
+  #dock #modes3d .btn,#dock #views3d .btn{padding:6px 14px;min-height:36px}
+  #moreSheet{max-height:calc(100dvh - 70px);top:calc(env(safe-area-inset-top) + 50px)}
+}
+.ico{display:none}
+.gl{font-style:normal}
+@media (min-width:1101px){#undo .gl,#redo .gl,#dock,#moreSheet{display:none}}
 </style>
 <script type="importmap">
 {"imports":{
@@ -235,23 +318,23 @@ main.drawer-panel #fab{opacity:0;visibility:hidden}
 <div class="app">
   <header>
     <div class="grp" id="paneBtns">
-      <button class="btn chip" id="tgLib" data-en="◧ Library">◧ 傢俱庫</button>
-      <button class="btn chip" id="tgPanel" data-en="Properties ◨">屬性 ◨</button>
+      <button class="btn chip" id="tgLib"><i class="gl">◧</i> <span data-en="Library">傢俱庫</span></button>
+      <button class="btn chip" id="tgPanel"><span data-en="Properties">屬性</span> <i class="gl">◨</i></button>
     </div>
-    <div class="brand"><b data-en="2BR + Dressing Room · Interior Design">兩房・更衣室・兩衛 · 裝修設計</b><span id="subtitle">依參考圖建模 · 尺寸單位 cm</span></div>
+    <div class="brand" id="brand"><b data-en="2BR + Dressing Room · Interior Design">兩房・更衣室・兩衛 · 裝修設計</b><span id="subtitle">依參考圖建模 · 尺寸單位 cm</span></div>
     <div class="grp seg" id="viewSeg" title="切換 2D / 3D (T)" data-en-title="Switch 2D / 3D (T)">
       <span class="pill"></span>
       <button class="btn" data-view="2d" data-en="2D Plan">2D 平面</button>
       <button class="btn" data-view="3d" data-en="3D Scene">3D 場景</button>
     </div>
     <div class="grp only2d" id="tools">
-      <button class="btn on" data-tool="select" title="選擇 / 移動 (V)" data-en-title="Select / Move (V)" data-en="Select">選擇</button>
-      <button class="btn" data-tool="measure" title="測量 (M)" data-en-title="Measure (M)" data-en="Measure">測量</button>
-      <button class="btn" data-tool="layout" data-en="Edit layout">格局編輯</button>
-      <button class="btn" data-tool="text" data-en="Move labels">文字位置</button>
-      <button class="btn" data-tool="demolish" title="拆改非承重牆 (X)" data-en-title="Demolish non-bearing walls (X)" data-en="Demolish">拆改牆體</button>
+      <button class="btn on" data-tool="select" title="選擇 / 移動 (V)" data-en-title="Select / Move (V)"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3l14 8-6 1.6L10 19z"/></svg><span data-en="Select">選擇</span></button>
+      <button class="btn" data-tool="measure" title="測量 (M)" data-en-title="Measure (M)"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 16.5L16.5 3 21 7.5 7.5 21z"/><path d="M7 12.5l2 2M10 9.5l2 2M13 6.5l2 2"/></svg><span data-en="Measure">測量</span></button>
+      <button class="btn" data-tool="layout"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h18v18H3z"/><path d="M3 11h8V3M11 21v-5h10"/></svg><span data-en="Edit layout">格局編輯</span></button>
+      <button class="btn" data-tool="text"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 6V4h14v2M12 4v16M9 20h6"/></svg><span data-en="Move labels">文字位置</span></button>
+      <button class="btn" data-tool="demolish" title="拆改非承重牆 (X)" data-en-title="Demolish non-bearing walls (X)"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h8M7 21V9M3 9h8"/><path d="M14 4l6 6M17 7l-4 4M13 11l-1.5 1.5"/></svg><span data-en="Demolish">拆改牆體</span></button>
     </div>
-    <div class="grp only2d">
+    <div class="grp only2d" id="zoomGrp">
       <button class="btn" id="zoomOut" title="縮小" data-en-title="Zoom out">−</button>
       <button class="btn" id="zoomIn" title="放大" data-en-title="Zoom in">＋</button>
       <button class="btn" id="fit" title="適應視窗 (F)" data-en-title="Fit to window (F)" data-en="Fit">適應</button>
@@ -262,13 +345,13 @@ main.drawer-panel #fab{opacity:0;visibility:hidden}
       <button class="btn on" data-mode="orbit" data-en="Orbit">鳥瞰</button>
       <button class="btn" data-mode="walk" data-en="Walk">漫遊</button>
     </div>
-    <div class="grp only3d">
+    <div class="grp only3d" id="views3d">
       <button class="btn" id="vIso" data-en="Iso">斜視</button>
       <button class="btn" id="vTop" data-en="Top">俯視</button>
     </div>
     <div class="grp">
-      <button class="btn" id="undo" title="復原 (Ctrl+Z)" data-en-title="Undo (Ctrl+Z)" data-en="Undo">復原</button>
-      <button class="btn" id="redo" title="重做 (Ctrl+Shift+Z)" data-en-title="Redo (Ctrl+Shift+Z)" data-en="Redo">重做</button>
+      <button class="btn" id="undo" title="復原 (Ctrl+Z)" data-en-title="Undo (Ctrl+Z)"><i class="gl">↶</i><span data-en="Undo">復原</span></button>
+      <button class="btn" id="redo" title="重做 (Ctrl+Shift+Z)" data-en-title="Redo (Ctrl+Shift+Z)"><i class="gl">↷</i><span data-en="Redo">重做</span></button>
       <button class="btn danger" id="clearAll" title="清空所有傢俱家電（可復原）" data-en-title="Remove all furniture and appliances (undoable)" data-en="Clear">清空佈置</button>
     </div>
     <div class="grp only2d" id="layers">
@@ -280,7 +363,7 @@ main.drawer-panel #fab{opacity:0;visibility:hidden}
       <button class="btn chip" data-layer="bearing" data-en="Bearing walls">承重牆</button>
       <button class="btn chip on" data-layer="wallSnap" title="拖動傢俱時貼牆吸附" data-en-title="Snap furniture to walls while dragging" data-en="Wall snap">貼牆吸附</button>
     </div>
-    <div class="grp only3d">
+    <div class="grp only3d" id="cutGrp">
       <button class="btn chip on" data-cut="2.8" data-en="Full walls">全高牆</button>
       <button class="btn chip" data-cut="1.2" data-en="Cut walls">剖切牆</button>
     </div>
@@ -289,9 +372,9 @@ main.drawer-panel #fab{opacity:0;visibility:hidden}
       <button class="btn chip on" data-t="labels" data-en="Labels">房間名</button>
       <button class="btn chip" data-t="night" data-en="Night">夜景</button>
     </div>
-    <div class="grp only3d"><label class="range"><span data-en="Sun">日照</span> <input type="range" id="sun" min="7" max="18" step=".25" value="10" style="width:84px"><span id="sunT">10:00</span></label></div>
+    <div class="grp only3d" id="sunGrp"><label class="range"><span data-en="Sun">日照</span> <input type="range" id="sun" min="7" max="18" step=".25" value="10" style="width:84px"><span id="sunT">10:00</span></label></div>
     <div class="spacer"></div>
-    <div class="grp" aria-label="顯示單位">
+    <div class="grp" id="unitGrp" aria-label="顯示單位">
       <label style="padding:0 5px"><span data-en="Length">尺寸</span> <select id="lengthUnit" aria-label="尺寸單位"><option value="cm">cm</option><option value="mm">mm</option></select></label>
       <label style="padding:0 5px"><span data-en="Area">面積</span> <select id="areaUnit" aria-label="面積單位"><option value="m2">m²</option><option value="ping">坪</option></select></label>
     </div>
@@ -304,8 +387,16 @@ main.drawer-panel #fab{opacity:0;visibility:hidden}
         <button class="btn" id="importJson" data-en="Import plan">匯入方案</button>
         <button class="btn danger" id="reset" data-en="Reset to default">重置為預設方案</button>
       </div></details>
+    <button class="btn narrow-only" id="moreBtn" title="更多" data-en-title="More" aria-expanded="false">⋯</button>
     <input type="file" id="fileIn" accept=".json,application/json" hidden>
   </header>
+
+  <div id="moreSheet" role="dialog" aria-label="更多">
+    <section class="only2d"><h5 data-en="Zoom">縮放</h5><div class="slot" data-slot="zoom"></div></section>
+    <section><h5 data-en="Display">顯示</h5><div class="slot" data-slot="view"></div></section>
+    <section><h5 data-en="Units · Language">單位與語言</h5><div class="slot" data-slot="settings"></div></section>
+    <section><h5 data-en="File">檔案</h5><div class="slot" data-slot="file"></div></section>
+  </div>
 
   <aside class="lib">
     <div id="lib3d" class="only3d">
@@ -341,10 +432,12 @@ main.drawer-panel #fab{opacity:0;visibility:hidden}
     <div class="scalebar" id="scalebar"><span id="sbText">1 m</span><div class="bar" id="sbBar"></div></div>
     <div class="modehint" id="modehint"></div>
     <div id="fab"></div>
+    <button class="btn narrow-only only2d" id="fitFab" title="適應視窗" data-en-title="Fit to window">⤢</button>
   </main>
 
   <aside class="right"><div id="panel"></div></aside>
 
+  <nav id="dock" aria-label="工具"></nav>
   <footer>
     <span class="only2d">X <b id="cx">—</b></span><span class="only2d">Y <b id="cy">—</b></span>
     <span class="only2d"><span data-en="Scale">當前比例</span> <b id="ratio">—</b></span>
@@ -1760,6 +1853,11 @@ function defaultState(){
   return {planId:PLAN_ID, furniture:defaultFurniture(), rooms, layoutEdits:{}, layoutAdded:{walls:[],windows:[]}, labelOffsets:{}, demolished:[], measures:[]};
 }
 
+// 預設方案：2026-10-01 匯出的配置（含家具、格局修改、新增窗戶、文字位置與測量）。
+// 首次開啟（瀏覽器內沒有存檔）與「重置為預設方案」都使用它；defaultState() 保留為原始空白格局。
+const DEFAULT_PLAN = {"planId":"reference-plan-20261001-v1","furniture":[{"id":"fmup7ctfv1","type":"counter","name":"廚房檯面","cx":300,"cy":2900,"w":2200,"d":600,"rot":270,"color":"#e9e5de"},{"id":"fmup7ctfv2","type":"ksink","name":"水槽","cx":300,"cy":2450,"w":650,"d":450,"rot":270,"color":"#e1e6ea"},{"id":"fmup7ctfv3","type":"stove","name":"瓦斯爐","cx":300,"cy":3600,"w":700,"d":450,"rot":270,"color":"#dcdcdc"},{"id":"fmup7ctfv4","type":"toilet","name":"馬桶","cx":4620,"cy":1340,"w":400,"d":650,"rot":270,"color":"#ffffff"},{"id":"fmup7ctfv5","type":"vanity","name":"洗手台","cx":4570,"cy":2100,"w":650,"d":500,"rot":270,"color":"#eef1f3"},{"id":"fmup7ctfv6","type":"shower","name":"淋浴區","cx":4975,"cy":410,"w":1050,"d":820,"rot":0,"color":"#e4edf2"},{"id":"fmup7ctfv7","type":"toilet","name":"馬桶","cx":10060,"cy":2840,"w":400,"d":650,"rot":90,"color":"#ffffff"},{"id":"fmup7ctfv8","type":"vanity","name":"洗手台","cx":10250,"cy":3675,"w":650,"d":500,"rot":90,"color":"#eef1f3"},{"id":"fmup7ctfv9","type":"shower","name":"淋浴區","cx":9800,"cy":4485,"w":1400,"d":770,"rot":180,"color":"#e4edf2"},{"id":"fmup9c0dh10","type":"bed","name":"雙人床 2m","cx":7500,"cy":5050,"w":2000,"d":2000,"rot":270,"color":"#c9d6df"},{"id":"fmup9ccv111","type":"wardrobe","name":"衣櫃","cx":8200,"cy":2850,"w":1500,"d":600,"rot":0,"color":"#efe6d8"},{"id":"fmup9ebet13","type":"sofa","name":"三人沙發","cx":3750,"cy":4800,"w":2500,"d":1200,"rot":90,"color":"#b7c4b0"},{"id":"fmupa2mji10","type":"table","name":"餐桌","cx":3600,"cy":1520,"w":1400,"d":800,"rot":90,"color":"#e2cfb4"},{"id":"fmupa2vni11","type":"chair","name":"餐椅","cx":2890,"cy":1100,"w":450,"d":480,"rot":270,"color":"#cfc6b8"},{"id":"fmupa331a12","type":"chair","name":"餐椅","cx":2890,"cy":1570,"w":450,"d":480,"rot":270,"color":"#cfc6b8"},{"id":"fmupa9uau13","type":"washer","name":"洗衣機","cx":1150,"cy":5560,"w":600,"d":600,"rot":90,"color":"#e6ebee"},{"id":"fmupaa6mg14","type":"acwall","name":"掛機空調","cx":2450,"cy":5925,"w":900,"d":250,"rot":180,"color":"#f6f7f8"},{"id":"fmupaakv915","type":"acwall","name":"掛機空調","cx":8300,"cy":5925,"w":900,"d":250,"rot":180,"color":"#f6f7f8"},{"id":"fmupabaum17","type":"chair","name":"餐椅","cx":2910,"cy":2050,"w":450,"d":480,"rot":270,"color":"#cfc6b8"},{"id":"fmupabphb18","type":"wardrobe","name":"衣櫃","cx":3000,"cy":300,"w":2000,"d":600,"rot":0,"color":"#efe6d8"},{"id":"fmupafkf219","type":"desk","name":"書桌","cx":5900,"cy":600,"w":1200,"d":600,"rot":270,"color":"#e2cfb4"}],"rooms":{"entry":{"name":"玄關","mat":"tile800"},"dining":{"name":"餐廳","mat":"wood"},"kitchen":{"name":"廚房","mat":"wood"},"living":{"name":"客廳","mat":"wood"},"hall":{"name":"走道","mat":"wood"},"bedroom":{"name":"臥室","mat":"wood"},"master":{"name":"主臥室","mat":"wood"},"dressing":{"name":"更衣室","mat":"wood"},"gbath":{"name":"客衛浴","mat":"antislip"},"gshower":{"name":"客衛淋浴","mat":"antislip"},"mbath":{"name":"主衛浴","mat":"antislip"},"mshower":{"name":"主衛淋浴","mat":"antislip"},"laundry":{"name":"工作陽台","mat":"antislip"},"balcony":{"name":"陽台","mat":"tile600"},"service":{"name":"外側平台（估）","mat":"tile600"},"terrace":{"name":"外側平台（估）","mat":"tile600"},"terrace2":{"name":"外側平台（估）","mat":"tile600"}},"demolished":[],"measures":[{"a":{"x":8950,"y":3200},"b":{"x":7450,"y":3200}}],"layoutEdits":{"rooms":{"bedroom":{"x":5600,"y":0,"width":3350,"depth":2450},"service":{"deleted":true},"terrace":{"deleted":true},"terrace2":{"deleted":true}},"walls":{"w30":{"x":6500,"y":6050,"width":1150,"depth":150},"w31":{"deleted":true},"w34":{"deleted":true},"w35":{"deleted":true},"w40":{"deleted":true}},"windows":{"win0":{"deleted":true,"x":4100,"y":-150,"width":1400,"depth":150},"win2":{"deleted":true},"win3":{"deleted":true},"custom-7b37492b-e486-4852-bf2c-c5e5b0176d90":{"x":7500,"y":6050,"width":1460,"depth":150},"custom-3ffe275b-4a08-44f8-bb7f-5219eee06bb8":{"x":8950,"y":4860,"width":150,"depth":1180},"custom-902f850d-f5da-4989-9539-8ca9b562bb23":{"x":9900,"y":4865,"width":600,"depth":100}},"doors":{"door8":{"deleted":true},"door9":{"deleted":true}},"slides":{}},"layoutAdded":{"walls":[],"windows":[{"id":"custom-7b37492b-e486-4852-bf2c-c5e5b0176d90","rect":[6500,6050,7650,6200]},{"id":"custom-3ffe275b-4a08-44f8-bb7f-5219eee06bb8","rect":[7630,6050,8830,6200]},{"id":"custom-902f850d-f5da-4989-9539-8ca9b562bb23","rect":[9600,4845,10800,4995]}]},"labelOffsets":{"dim:mshower:h:0":{"x":-37,"y":-305},"room:mshower:name":{"x":1046,"y":99},"room:mbath:name":{"x":1082,"y":-20},"room:hall:area":{"x":138,"y":-220},"room:hall:name":{"x":-525,"y":77},"room:gbath:name":{"x":-420,"y":-306},"room:gshower:name":{"x":-29,"y":-684},"dim:gshower:h:0":{"x":-45,"y":244},"dim:gshower:v:0":{"x":94,"y":-94},"room:gshower:area":{"x":-12,"y":-472},"dim:gbath:h:0":{"x":-35,"y":25},"room:gbath:area":{"x":-491,"y":-340},"room:entry:name":{"x":-345,"y":-142},"room:entry:area":{"x":-308,"y":-180},"room:dining:name":{"x":-748,"y":210},"room:dining:area":{"x":-748,"y":303},"dim:kitchen:v:0":{"x":22,"y":82},"room:kitchen:name":{"x":-148,"y":-148},"room:kitchen:area":{"x":-148,"y":-119},"room:laundry:name":{"x":-260,"y":-22},"room:laundry:area":{"x":-260,"y":-37}},"exportVersion":1};
+function presetState(){ return readPlanTransfer(JSON.stringify(DEFAULT_PLAN)).plan; }
+
 const STORE = 'floorplan-' + PLAN_ID;
 function load(){
   try { const s = JSON.parse(localStorage.getItem(STORE)); if (s && Array.isArray(s.furniture)) return fixState(s); } catch(e) {}
@@ -1788,7 +1886,7 @@ const svg = $('#plan');
 
 
 /* ======================= 狀態 / 歷史 / 儲存 ======================= */
-let state = load() || defaultState();
+let state = load() || presetState();
 const ui = {tool:'select', sel:null, mA:null, mCur:null,
   layers:{dims:true, labels:true, furn:true, furnDims:false, grid:false, bearing:false, wallSnap:true}};
 let view = {x0:0, y0:0, s:.06};
@@ -2195,7 +2293,7 @@ function renderFab(){
   const fab = $('#fab'), f = ui.sel?.kind === 'furn' && getF(ui.sel.id), r = ui.sel?.kind === 'room' && ROOMS.find(r => r.id === ui.sel.id);
   if (!f && !r){ fab.classList.remove('show'); return; }
   fab.innerHTML = f
-    ? `<span class="name">${esc(nm(f.name))}</span><button class="btn" data-a="rotL">↺</button><button class="btn" data-a="rotR">↻ ${tr('旋轉','Rotate')}</button>
+    ? `<span class="name">${esc(nm(f.name))}</span><button class="btn" data-a="rotL">↺</button><button class="btn" data-a="rotR">↻<span class="t"> ${tr('旋轉','Rotate')}</span></button>
        <button class="btn" data-a="dup">${tr('複製','Duplicate')}</button><button class="btn danger" data-a="del">${tr('刪除','Delete')}</button><span class="sep"></span>
        <button class="btn narrow-only" data-a="prop">${tr('屬性','Properties')}</button><button class="btn" data-a="done">${tr('完成','Done')}</button>`
     : `<span class="name">${esc(nm(state.rooms[r.id].name))}</span><button class="btn narrow-only" data-a="prop">${tr('地面 / 屬性','Floor / Properties')}</button><button class="btn" data-a="done">${tr('完成','Done')}</button>`;
@@ -2631,7 +2729,8 @@ addEventListener('pointermove', e => {
   const g = libDrag.ghost, s = Math.max(dropPoint(e.clientX, e.clientY)?.s || (is3D() ? .05 : view.s), .02);
   Object.assign(g.style, {width:Math.max(28, it[2]*s)+'px', height:Math.max(20, it[3]*s)+'px', left:e.clientX+'px', top:e.clientY+'px'});
   const lib = $('aside.lib');
-  if (narrow() && lib.classList.contains('open') && e.clientX > lib.getBoundingClientRect().right) drawer(null);   // 拖出抽屜後自動收起
+  const lr = lib.getBoundingClientRect();
+  if (narrow() && lib.classList.contains('open') && (e.clientX > lr.right || e.clientY < lr.top)) drawer(null);   // 拖出抽屜（側邊或底部）後自動收起
 });
 function endLibDrag(e, ok){
   if (!libDrag || e.pointerId !== libDrag.id) return;
@@ -2700,7 +2799,7 @@ async function setView(m){
   $('#tip').textContent = TIPS()[m];
   switching = false; document.body.classList.remove('busy');
 }
-document.querySelectorAll('.menu-pop .btn').forEach(b => b.addEventListener('click', () => b.closest('details').open = false));
+document.querySelectorAll('.menu-pop .btn,#clearAll').forEach(b => b.addEventListener('click', () => { const d = b.closest('details'); if (d) d.open = false; if (narrow()) moreSheet(false); }));
 document.querySelectorAll('#viewSeg .btn').forEach(b => b.onclick = () => setView(b.dataset.view));
 
 document.querySelectorAll('#tools .btn').forEach(b => b.onclick = () => setTool(b.dataset.tool));
@@ -2741,7 +2840,27 @@ $('#tgLib').onclick = () => drawer('lib');
 $('#tgPanel').onclick = () => drawer('panel');
 // 觸屏上點選單以外的地方收起「檔案」選單
 document.addEventListener('pointerdown', e => { const m = $('details.menu'); if (m.open && !m.contains(e.target)) m.open = false; });
-matchMedia('(max-width:1100px)').addEventListener('change', () => drawer(null));
+/* 窄屏重排：把工具搬到底部 dock，次要控制搬進「⋯」面板；寬屏時放回頂欄原位 */
+const RELOC = [['#tools','#dock'],['#modes3d','#dock'],['#views3d','#dock'],
+  ['#zoomGrp','[data-slot=zoom]'],['#layers','[data-slot=view]'],['#cutGrp','[data-slot=view]'],['#toggles3d','[data-slot=view]'],['#sunGrp','[data-slot=view]'],
+  ['#unitGrp','[data-slot=settings]'],['#langBtn','[data-slot=settings]'],['#fullscreen','[data-slot=settings]'],
+  ['header .menu-pop','[data-slot=file]'],['#clearAll','[data-slot=file]']]
+  .map(([sel, to]) => { const el = $(sel), ph = document.createComment('reloc'); el.before(ph); return {el, ph, to}; });
+function relayout(){
+  const n = narrow();
+  RELOC.forEach(({el, ph, to}) => n ? $(to).appendChild(el) : ph.after(el));
+  if (!n) moreSheet(false);
+}
+function moreSheet(open){
+  const sh = $('#moreSheet'), b = $('#moreBtn'), on = open ?? !sh.classList.contains('open');
+  sh.classList.toggle('open', on); b.classList.toggle('on', on); b.setAttribute('aria-expanded', on);
+  if (on) drawer(null);
+}
+$('#moreBtn').onclick = () => moreSheet();
+$('#fitFab').onclick = () => $('#fit').click();
+document.addEventListener('pointerdown', e => { if ($('#moreSheet').classList.contains('open') && !e.target.closest('#moreSheet,#moreBtn')) moreSheet(false); });
+relayout();
+matchMedia('(max-width:1100px)').addEventListener('change', () => { relayout(); drawer(null); });
 drawer(null);                                  // 恢復上次的面板收起狀態
 $('#exportPng').onclick = exportPNG;
 $('#exportJson').onclick = () => {
@@ -2773,7 +2892,7 @@ $('#fileIn').onchange = e => {
   }).catch(()=>alert(tr('無法讀取檔案，請先下載 JSON 到這台裝置再匯入','Cannot read the file. Download the JSON to this device first.')));
   e.target.value = '';
 };
-$('#reset').onclick = () => { if (confirm(tr('恢復為預設設計方案？（可復原）', 'Reset to the default design? (undoable)'))){ const b = snap(); state = defaultState(); ui.sel = null; commit(b); renderAll(); } };
+$('#reset').onclick = () => { if (confirm(tr('恢復為預設設計方案？（可復原）', 'Reset to the default design? (undoable)'))){ const b = snap(); state = presetState(); ui.sel = null; commit(b); renderAll(); } };
 // 橫豎屏切換、表頭換行等都會改變畫布尺寸；尺寸從 0 恢復（如首次佈局）時重新適應視窗
 // 其餘尺寸變化（收起 / 展開面板等）保持畫面中心不動
 let lastW = 0, lastH = 0;

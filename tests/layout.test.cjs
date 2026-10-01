@@ -37,6 +37,7 @@ assert.equal(JSON.stringify([ROOMS,WALLS,WINS,DOORS]),geometry,'Display changes 
 const current=defaultState(); assert.equal(fixState(JSON.parse(JSON.stringify(current))).planId,PLAN_ID);
 assert.throws(()=>fixState({furniture:[],rooms:{}}));
 assert.equal(current.furniture.length,9);
+const preset=presetState(); assert.equal(preset.planId,PLAN_ID); assert.equal(preset.furniture.length,21,'Default plan furniture'); assert.equal(preset.layoutEdits.rooms.terrace.deleted,true,'Default plan layout edits'); assert.equal(preset.layoutAdded.windows.length,3,'Default plan added windows');
 for (const w of [...WALLS,...WINS,...DOORS.map(d=>d.rect),...SLIDES.map(d=>d.rect)]) {
   assert.ok(w[2]>w[0] && w[3]>w[1], 'Positive rectangle');
 }
