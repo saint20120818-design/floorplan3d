@@ -126,6 +126,18 @@ assert.equal(JSON.stringify(deriveLayout(labelled)),beforeLabels,'Moving text ca
 assert.throws(()=>normalizeLabelOffsets({'room:mbath:name':{x:Infinity,y:0}}));
 assert.throws(()=>normalizeLabelOffsets({'room:mbath:name':{x:0,y:50001}}));
 assert.equal(Object.keys(normalizeLabelOffsets({'bad-id':{x:0,y:0}})).length,0);
+const portable=structuredClone(added);
+portable.furniture[0].cx+=900;portable.furniture[0].w=2000;
+portable.layoutEdits.rooms={terrace2:{deleted:true},bedroom:{width:4000}};
+portable.labelOffsets={'room:mbath:name':{x:300,y:100}};
+portable.measures=[{a:{x:0,y:0},b:{x:1000,y:2000}}];
+const transferred=readPlanTransfer(writePlanTransfer(portable,{length:'mm',area:'ping',fx:4.8,layers:{furn:true,furnDims:true}}));
+assert.equal(JSON.stringify(transferred.plan),JSON.stringify(fixState(structuredClone(portable))),'Complete transfer preserves all design data');
+assert.equal(JSON.stringify(deriveLayout(transferred.plan)),JSON.stringify(deriveLayout(portable)),'Transfer preserves derived geometry');
+assert.equal(transferred.display.length,'mm');assert.equal(transferred.display.layers.furnDims,true);
+assert.equal(readPlanTransfer('\uFEFF'+JSON.stringify(portable)).plan.furniture[0].w,2000,'Legacy files and BOM accepted');
+assert.throws(()=>readPlanTransfer(JSON.stringify({...portable,exportVersion:99})));
+assert.throws(()=>readPlanTransfer(JSON.stringify({...portable,furniture:[{id:'broken'}]})));
 assert.equal(JSON.stringify([ROOMS,WALLS,WINS,DOORS]),geometry,'Edits never mutate base geometry');
 `, context);
 const gestureContext=vm.createContext({assert});

@@ -1,5 +1,23 @@
 // 可儲存的格局覆寫；原始資料保持不變，刪除項目保留穩定 ID。
 const LAYOUT_TYPES = ['rooms', 'walls', 'windows', 'doors', 'slides'];
+function readPlanTransfer(text) {
+  const raw=JSON.parse(text.replace(/^\uFEFF/,''));
+  if(!raw || typeof raw!=='object' || !Array.isArray(raw.furniture))throw new Error('檔案不是方案 JSON');
+  if(raw.exportVersion && raw.exportVersion!==1)throw new Error('檔案版本較新，請重新整理網頁後再匯入');
+  const plan=fixState(structuredClone(raw));
+  const ids=new Set();
+  for(const f of plan.furniture){
+    if(!f || typeof f.id!=='string' || ids.has(f.id) || !['cx','cy','w','d','rot'].every(k=>typeof f[k]==='number' && Number.isFinite(f[k])) || f.w<=0 || f.d<=0 || typeof f.type!=='string')throw new Error('家具資料不完整，請從原電腦重新匯出');
+    ids.add(f.id);
+  }
+  for(const r of Object.values(plan.rooms))if(!r || !MATS[r.mat])throw new Error('地面材料資料無效');
+  const display=raw.display || {};
+  delete plan.exportVersion;delete plan.exportedAt;delete plan.display;
+  return {plan,display};
+}
+function writePlanTransfer(plan,display) {
+  return JSON.stringify({...structuredClone(plan),exportVersion:1,exportedAt:new Date().toISOString(),display:structuredClone(display)},null,2);
+}
 function normalizeLabelOffsets(input) {
   const result={};
   if(input===undefined || input===null)return result;

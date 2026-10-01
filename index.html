@@ -2744,14 +2744,33 @@ document.addEventListener('pointerdown', e => { const m = $('details.menu'); if 
 matchMedia('(max-width:1100px)').addEventListener('change', () => drawer(null));
 drawer(null);                                  // 恢復上次的面板收起狀態
 $('#exportPng').onclick = exportPNG;
-$('#exportJson').onclick = () => download(tr('格局裝修方案', 'floor-plan-design') + '.json', new Blob([JSON.stringify(state, null, 2)], {type:'application/json'}));
+$('#exportJson').onclick = () => {
+  const pending=$('#layoutForm') || $('#labelForm');
+  if(pending){if(!pending.reportValidity())return;pending.requestSubmit();}
+  if(drag)endDrag(false);
+  const stamp=new Date().toISOString().replace(/[:.]/g,'-');
+  const content=writePlanTransfer(state,{length:LENGTH_UNIT,area:AREA_UNIT,fx:FX_RATE,layers:ui.layers});
+  download(tr('格局裝修方案','floor-plan-design')+'-'+stamp+'.json',new Blob([content],{type:'application/json'}));
+  toast(tr(`已匯出 ${state.furniture.length} 件家具及完整格局，請使用最新檔案`,`Exported ${state.furniture.length} furniture items and the full layout`));
+};
 $('#importJson').onclick = () => $('#fileIn').click();
 $('#fileIn').onchange = e => {
   const file = e.target.files[0]; if (!file) return;
   file.text().then(txt => {
-    try { const s = JSON.parse(txt); if (!Array.isArray(s.furniture)) throw 0; const b = snap(); state = fixState(s); ui.sel = null; commit(b); renderAll(); toast(tr('方案已匯入', 'Plan imported')); }
-    catch(err){ toast(tr('無法匯入：請使用本格局匯出的方案 JSON', 'Import failed: use a JSON plan exported from this layout')); }
-  });
+    try {
+      const {plan,display}=readPlanTransfer(txt), b=snap();
+      state=plan;ui.sel=null;
+      LENGTH_UNIT=display.length==='mm'?'mm':'cm';AREA_UNIT=display.area==='ping'?'ping':'m2';
+      if(typeof display.fx==='number' && Number.isFinite(display.fx) && display.fx>0)FX_RATE=display.fx;
+      const defaults={dims:true,labels:true,furn:true,furnDims:false,grid:false,bearing:false,wallSnap:true};
+      for(const key of Object.keys(defaults))ui.layers[key]=typeof display.layers?.[key]==='boolean'?display.layers[key]:defaults[key];
+      $('#lengthUnit').value=LENGTH_UNIT;$('#areaUnit').value=AREA_UNIT;savePrefs();buildLib();
+      document.querySelectorAll('#layers [data-layer]').forEach(el=>el.classList.toggle('on',ui.layers[el.dataset.layer]));
+      setTool('select');commit(b);renderAll();fitView();
+      alert(tr(`已匯入「${file.name}」\n家具：${state.furniture.length} 件\n格局修改、新增牆窗、文字位置及測量已套用。\n請確認畫面；如有問題可按 Ctrl＋Z 復原。`,`Imported ${file.name}\nFurniture: ${state.furniture.length}\nLayout, added objects, labels and measurements restored. Ctrl+Z undoes the import.`));
+    }
+    catch(err){alert(tr('無法匯入：','Import failed: ')+(err.message || tr('檔案格式錯誤','Invalid file')));}
+  }).catch(()=>alert(tr('無法讀取檔案，請先下載 JSON 到這台裝置再匯入','Cannot read the file. Download the JSON to this device first.')));
   e.target.value = '';
 };
 $('#reset').onclick = () => { if (confirm(tr('恢復為預設設計方案？（可復原）', 'Reset to the default design? (undoable)'))){ const b = snap(); state = defaultState(); ui.sel = null; commit(b); renderAll(); } };
